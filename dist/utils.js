@@ -700,7 +700,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var transEndEventNames = {
 	        'WebkitAnimation': 'webkitAnimationEnd',
 	        'MozAnimation': 'animationend',
-	        'OTransition': 'oAnimationEnd oanimationend',
+	        'OAnimation': 'oAnimationEnd oanimationend',
 	        'animation': 'animationend'
 	    };
 	    for (var name in transEndEventNames) {
@@ -740,7 +740,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    };
 	    var useCap = !! ~unbubblebles.indexOf(eventName);
-	    addEventListener(this.el, eventName, handler, useCap);
+	    addEventListener(elm, eventName, handler, useCap);
 	    domEvents.push({ eventName: eventName, handler: handler, listener: callback, selector: selector });
 	    return handler;
 	}
@@ -755,7 +755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var item = handlers[i];
 	        var match = item.eventName === eventName && (callback ? item.listener === callback : true) && (selector ? item.selector === selector : true);
 	        if (!match) continue;
-	        removeEventListener(this.el, item.eventName, item.handler);
+	        removeEventListener(elm, item.eventName, item.handler);
 	        domEvents.splice(arrays_1.indexOf(handlers, item), 1);
 	    }
 	}

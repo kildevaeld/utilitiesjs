@@ -43,7 +43,7 @@ const animationEndEvent = (function animationEnd() {
   var transEndEventNames = {
     'WebkitAnimation': 'webkitAnimationEnd',
     'MozAnimation': 'animationend',
-    'OTransition': 'oAnimationEnd oanimationend',
+    'OAnimation': 'oAnimationEnd oanimationend',
     'animation': 'animationend'
   }
 
@@ -90,7 +90,7 @@ export function delegate(elm: HTMLElement | string, selector: string, eventName:
   }
 
   let useCap = !!~unbubblebles.indexOf(eventName)
-  addEventListener(this.el, eventName, handler, useCap);
+  addEventListener(<HTMLElement>elm, eventName, handler, useCap);
   domEvents.push({ eventName: eventName, handler: handler, listener: callback, selector: selector });
   return handler;
 }
@@ -111,7 +111,7 @@ export function undelegate(elm: HTMLElement | string, selector: string, eventNam
 
     if (!match) continue;
 
-    removeEventListener(this.el, item.eventName, item.handler);
+    removeEventListener(<HTMLElement>elm, item.eventName, item.handler);
     domEvents.splice(indexOf(handlers, item), 1);
   }
 }
