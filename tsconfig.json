@@ -29,6 +29,7 @@
       "./src/html.ts",
       "./src/utils.ts",
       "./src/strings.ts",
-      "./src/request.ts"
+      "./src/request.ts",
+      "./src/debug.ts"
     ]
 }
