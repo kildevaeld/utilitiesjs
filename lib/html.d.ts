@@ -9,4 +9,4 @@ export declare function hasClass(elm: HTMLElement, className: string): boolean;
 export declare function selectionStart(elm: HTMLInputElement): number;
 export declare function transitionEnd(elm: Element, fn: (event: TransitionEvent) => void, ctx?: any, duration?: number): void;
 export declare function animationEnd(elm: Element, fn: (event: AnimationEvent) => void, ctx?: any, duration?: number): void;
-export declare const domReady: (fn: any) => void;
+export declare const domReady: () => (fn: any) => void;

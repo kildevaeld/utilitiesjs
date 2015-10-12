@@ -8,6 +8,7 @@ export declare class Debug {
     };
     static create(namespace: string): (...args: any[]) => void;
     enabled: boolean;
+    prefix: string;
     namespace: string;
     constructor(namespace: string);
     debug(...args: any[]): void;

@@ -4,10 +4,10 @@ import {slice, flatten} from './arrays'
 import {callFunc, nextTick} from './utils'
 
 export interface IPromise<T> extends Thenable<T> {
-	
+
 }
 
-export const Promise: PromiseConstructor = (<any>window).Promise;
+export const Promise: PromiseConstructor = (typeof window === 'undefined') ? global.Promise : (<any>window).Promise;
 
 export interface Thenable<R> {
     then<U>(onFulfilled?: (value: R) => U | Thenable<U>, onRejected?: (error: any) => U | Thenable<U>): Thenable<U>;

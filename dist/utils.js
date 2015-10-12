@@ -525,12 +525,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
 	var objects_1 = __webpack_require__(3);
 	var arrays_1 = __webpack_require__(1);
 	var utils_1 = __webpack_require__(2);
-	exports.Promise = window.Promise;
+	exports.Promise = typeof window === 'undefined' ? global.Promise : window.Promise;
 	function isPromise(obj) {
 	    return obj && typeof obj.then === 'function';
 	}
@@ -662,6 +662,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	}
 	exports.mapAsync = mapAsync;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 6 */
@@ -822,7 +823,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    addEventListener(elm, event, callback);
 	}
 	exports.animationEnd = animationEnd;
-	exports.domReady = (function () {
+	exports.domReady = function () {
 	    var fns = [],
 	        listener,
 	        doc = document,
@@ -839,7 +840,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return function (fn) {
 	        loaded ? setTimeout(fn, 0) : fns.push(fn);
 	    };
-	})();
+	};
 
 /***/ },
 /* 7 */
@@ -1008,7 +1009,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return val;
 	    };
 	    Debug.prototype._formatArgs = function (args) {
-	        args[0] = '[templ:' + this.namespace + '] ' + args[0];
+	        var p = this.prefix ? this.prefix + ":" : '';
+	        args[0] = "[" + p + ":" + this.namespace + "] " + args[0];
 	        return args;
 	    };
 	    Debug.loggers = {};
