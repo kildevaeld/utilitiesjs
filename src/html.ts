@@ -1,5 +1,5 @@
 
-import {indexOf} from './arrays'
+import {indexOf, unique} from './arrays'
 var ElementProto: any = (typeof Element !== 'undefined' && Element.prototype) || {};
 
 var matchesSelector = ElementProto.matches ||
@@ -118,16 +118,23 @@ export function undelegate(elm: HTMLElement | string, selector: string, eventNam
 
 
 export function addClass(elm: HTMLElement, className: string) {
-  if (elm.classList)
-    elm.classList.add(className)
-  else {
-    elm.className = elm.className.split(' ').concat(className.split(' ')).join(' ')
+  if (elm.classList) {
+    let split = className.split(' ');
+    for (let i = 0, ii = split.length; i < ii;i++) {
+      if (elm.classList.contains(split[i].trim())) continue;
+      elm.classList.add(split[i].trim());
+    }
+  } else {
+    elm.className = unique(elm.className.split(' ').concat(className.split(' '))).join(' ')
   }
 }
 export function removeClass(elm: HTMLElement, className: string) {
-  if (elm.classList)
-    elm.classList.remove(className)
-  else {
+  if (elm.classList) {
+    let split = className.split(' ');
+    for (let i = 0, ii = split.length; i < ii; i++) {
+      elm.classList.remove(split[i].trim());
+    }
+  } else {
     let split = elm.className.split(' '),
       classNames = className.split(' '),
       tmp = split, index

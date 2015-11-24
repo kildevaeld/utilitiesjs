@@ -763,13 +763,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.undelegate = undelegate;
 	function addClass(elm, className) {
-	    if (elm.classList) elm.classList.add(className);else {
-	        elm.className = elm.className.split(' ').concat(className.split(' ')).join(' ');
+	    if (elm.classList) {
+	        var split = className.split(' ');
+	        for (var i = 0, ii = split.length; i < ii; i++) {
+	            if (elm.classList.contains(split[i].trim())) continue;
+	            elm.classList.add(split[i].trim());
+	        }
+	    } else {
+	        elm.className = arrays_1.unique(elm.className.split(' ').concat(className.split(' '))).join(' ');
 	    }
 	}
 	exports.addClass = addClass;
 	function removeClass(elm, className) {
-	    if (elm.classList) elm.classList.remove(className);else {
+	    if (elm.classList) {
+	        var split = className.split(' ');
+	        for (var i = 0, ii = split.length; i < ii; i++) {
+	            elm.classList.remove(split[i].trim());
+	        }
+	    } else {
 	        var split = elm.className.split(' '),
 	            classNames = className.split(' '),
 	            tmp = split,
@@ -860,7 +871,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.queryParam = queryParam;
 	var isValid = function isValid(xhr, url) {
-	    return xhr.status >= 200 && xhr.status < 300 || xhr.status === 304 || xhr.status === 0 && fileProto.test(url);
+	    return xhr.status >= 200 && xhr.status < 300 || xhr.status === 304 || xhr.status === 0 && fileProto.test(url) || xhr.status === 0 && window.location.protocol === 'file:';
 	};
 	var Request = (function () {
 	    function Request(_method, _url) {

@@ -16,10 +16,11 @@ export function queryParam ( obj ): string {
 }
 
 var isValid = function(xhr, url) {
+
     return (xhr.status >= 200 && xhr.status < 300) ||
       (xhr.status === 304) ||
-      (xhr.status === 0 && fileProto.test(url));
-      //(xhr.status === 0 && window.location.protocol === 'file:')
+      (xhr.status === 0 && fileProto.test(url)) ||
+      (xhr.status === 0 && window.location.protocol === 'file:')
   };
 
 export class Request {
