@@ -99,10 +99,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.indexOf = indexOf;
 	function find(array, callback, ctx) {
-	    var i, v;
-	    for (i = 0; i < array.length; i++) {
-	        v = array[i];
-	        if (callback.call(ctx, v)) return v;
+	    var v;
+	    for (var i = 0, ii = array.length; i < ii; i++) {
+	        if (callback.call(ctx, array[i])) return array[i];
 	    }
 	    return null;
 	}
@@ -128,8 +127,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            criteria: iterator.call(context, value, index, list)
 	        };
 	    }).sort(function (left, right) {
-	        var a = left.criteria;
-	        var b = right.criteria;
+	        var a = left.criteria,
+	            b = right.criteria;
 	        if (a !== b) {
 	            if (a > b || a === void 0) return 1;
 	            if (a < b || b === void 0) return -1;
@@ -931,25 +930,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Request;
 	})();
 	exports.Request = Request;
-	var request;
-	(function (request) {
-	    function get(url) {
-	        return new Request('GET', url);
-	    }
-	    request.get = get;
-	    function post(url) {
-	        return new Request('POST', url);
-	    }
-	    request.post = post;
-	    function put(url) {
-	        return new Request('PUT', url);
-	    }
-	    request.put = put;
-	    function del(url) {
-	        return new Request('DELETE', url);
-	    }
-	    request.del = del;
-	})(request = exports.request || (exports.request = {}));
+	(function (HttpMethod) {
+	    HttpMethod[HttpMethod["Get"] = 0] = "Get";
+	    HttpMethod[HttpMethod["Post"] = 1] = "Post";
+	    HttpMethod[HttpMethod["Put"] = 2] = "Put";
+	    HttpMethod[HttpMethod["Delete"] = 3] = "Delete";
+	    HttpMethod[HttpMethod["Patch"] = 4] = "Patch";
+	    HttpMethod[HttpMethod["Head"] = 5] = "Head";
+	})(exports.HttpMethod || (exports.HttpMethod = {}));
+	var HttpMethod = exports.HttpMethod;
+	exports.request = {};
+	['get', 'post', 'put', 'delete', 'patch', 'head'].forEach(function (m) {
+	    exports.request[m === 'delete' ? 'del' : m] = function (url) {
+	        return new Request(m.toUpperCase(), url);
+	    };
+	});
 
 /***/ },
 /* 8 */

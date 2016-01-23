@@ -118,8 +118,7 @@ export function getOption(option: string, objs: any[]): any {
   return null
 }
 
-export function inherits<T extends FunctionConstructor>(parent:T, protoProps: Object, staticProps?: Object): T {
-  //var parent = this;
+export function inherits<T extends FunctionConstructor, U>(parent:T, protoProps: Object, staticProps?: Object): T {
   var child;
 
   // The constructor function for the new subclass is either defined by you

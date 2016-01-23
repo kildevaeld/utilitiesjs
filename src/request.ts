@@ -104,21 +104,22 @@ export class Request {
   }
 
 
-
-export module request {
-  export function get (url): Request {
-      return new Request('GET', url)
-  }
-
-  export function post (url): Request {
-      return new Request('POST', url)
-  }
-
-  export function put (url): Request {
-      return new Request('PUT', url)
-    }
-
-    export function del (url): Request {
-      return new Request('DELETE', url)
-    }
+export interface IRequest {
+    get(url: string): Request;
+    post(url: string): Request;
+    put(url: string): Request;
+    del(url: string): Request;
+    patch(url: string): Request;
+    head(url: string): Request;
 }
+
+
+
+export var request: IRequest = <any>{};
+
+['get', 'post', 'put', 'delete', 'patch', 'head']
+    .forEach((m) => {
+        request[m === 'delete' ? 'del' : m] = function(url: string): Request {
+            return new Request(m.toUpperCase(), url);
+        };
+    });

@@ -1,6 +1,7 @@
 
 import {equal} from './utils';
 
+// Return a new array with duplicates removed
 export function unique(array: any[]): any[] {
   return array.filter(function(e, i) {
     for (i += 1; i < array.length; i += 1) {
@@ -26,16 +27,15 @@ export function indexOf(array, item): number {
 }
 
 export function find<T>(array: T[], callback: (item: T, index?: number) => boolean, ctx?: any): T {
-  let i, v
-  for (i = 0; i < array.length; i++) {
-    v = array[i]
-    if (callback.call(ctx, v)) return v
+  let v;
+  for (let i = 0, ii = array.length; i < ii; i++) {
+    if (callback.call(ctx, array[i])) return array[i];
   }
-  return null
+  return null;
 }
 
 export function slice(array: any, begin?:number, end?:number): any {
-  return Array.prototype.slice.call(array,begin,end)
+  return Array.prototype.slice.call(array, begin, end);
 }
 
 export function flatten(arr) {
@@ -55,8 +55,8 @@ export function sortBy<T>(obj: T[], value: string|Function, context?: any): T[] 
         };
       })
       .sort(function(left, right) {
-        var a = left.criteria;
-        var b = right.criteria;
+        let a = left.criteria,
+            b = right.criteria;
         if (a !== b) {
           if (a > b || a === void 0) return 1;
           if (a < b || b === void 0) return -1;

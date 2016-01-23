@@ -6,5 +6,5 @@ export declare function callFunc(fn: Function, ctx: any, args?: any[]): any;
 export declare function equal(a: any, b: any): boolean;
 export declare function triggerMethodOn(obj: any, eventName: string, args?: any[]): void;
 export declare function getOption(option: string, objs: any[]): any;
-export declare function inherits<T extends FunctionConstructor>(parent: T, protoProps: Object, staticProps?: Object): T;
+export declare function inherits<T extends FunctionConstructor, U>(parent: T, protoProps: Object, staticProps?: Object): T;
 export declare const nextTick: (fn: any) => void;

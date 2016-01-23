@@ -19,9 +19,20 @@ export declare class Request {
     progress(fn: any): Request;
     header(field: string, value: string): Request;
 }
-export declare module request {
-    function get(url: any): Request;
-    function post(url: any): Request;
-    function put(url: any): Request;
-    function del(url: any): Request;
+export declare enum HttpMethod {
+    Get = 0,
+    Post = 1,
+    Put = 2,
+    Delete = 3,
+    Patch = 4,
+    Head = 5,
 }
+export interface IRequest {
+    get(url: string): Request;
+    post(url: string): Request;
+    put(url: string): Request;
+    del(url: string): Request;
+    patch(url: string): Request;
+    head(url: string): Request;
+}
+export declare var request: IRequest;
