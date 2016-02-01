@@ -369,6 +369,27 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var utils_1 = __webpack_require__(2);
 	var arrays_1 = __webpack_require__(1);
+	function objToPaths(obj, separator) {
+	    if (separator === void 0) {
+	        separator = ".";
+	    }
+	    var ret = {};
+	    for (var key in obj) {
+	        var val = obj[key];
+	        if (val && (val.constructor === Object || val.constructor === Array) && !isEmpty(val)) {
+	            console.log('VAL', val);
+	            var obj2 = objToPaths(val);
+	            for (var key2 in obj2) {
+	                var val2 = obj2[key2];
+	                ret[key + separator + key2] = val2;
+	            }
+	        } else {
+	            ret[key] = val;
+	        }
+	    }
+	    return ret;
+	}
+	exports.objToPaths = objToPaths;
 	function isObject(obj) {
 	    return obj === Object(obj);
 	}
@@ -747,10 +768,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.delegate = delegate;
 	function undelegate(elm, selector, eventName, callback) {
-	    /*if (typeof selector === 'function') {
-	        listener = <Function>selector;
-	        selector = null;
-	      }*/
 	    var handlers = domEvents.slice();
 	    for (var i = 0, len = handlers.length; i < len; i++) {
 	        var item = handlers[i];
@@ -930,15 +947,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Request;
 	})();
 	exports.Request = Request;
-	(function (HttpMethod) {
-	    HttpMethod[HttpMethod["Get"] = 0] = "Get";
-	    HttpMethod[HttpMethod["Post"] = 1] = "Post";
-	    HttpMethod[HttpMethod["Put"] = 2] = "Put";
-	    HttpMethod[HttpMethod["Delete"] = 3] = "Delete";
-	    HttpMethod[HttpMethod["Patch"] = 4] = "Patch";
-	    HttpMethod[HttpMethod["Head"] = 5] = "Head";
-	})(exports.HttpMethod || (exports.HttpMethod = {}));
-	var HttpMethod = exports.HttpMethod;
 	exports.request = {};
 	['get', 'post', 'put', 'delete', 'patch', 'head'].forEach(function (m) {
 	    exports.request[m === 'delete' ? 'del' : m] = function (url) {

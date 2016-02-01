@@ -4,7 +4,7 @@ const gulp = require('gulp'),
 	typescript = require('gulp-typescript'),
 	concat = require('gulp-concat'),
 	merge = require('merge2'),
-	sq = require('streamqueue'),
+	//sq = require('streamqueue'),
 	webpack = require('gulp-webpack');
 
 const project = typescript.createProject('tsconfig.json', {

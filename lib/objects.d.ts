@@ -1,4 +1,5 @@
-export declare function isObject(obj: any): boolean;
+export declare function objToPaths(obj: Object, separator?: string): {};
+export declare function isObject(obj: any): obj is Object;
 export declare function isEmpty(obj: any): boolean;
 export declare function extend(obj: Object, ...args: Object[]): any;
 export declare function assign(target: any, ...args: any[]): any;

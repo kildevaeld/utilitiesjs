@@ -1,7 +1,39 @@
+
 import {equal, callFunc} from './utils'
 import {any} from './arrays'
 
-export function isObject(obj: any): boolean {
+/**
+ * Takes a nested object and returns a shallow object keyed with the path names
+ * e.g. { "level1.level2": "value" }
+ *
+ * @param  {Object}      Nested object e.g. { level1: { level2: 'value' } }
+ * @return {Object}      Shallow object with path names e.g. { 'level1.level2': 'value' }
+ */
+export function objToPaths(obj:Object, separator:string = ".") {
+  var ret = {};
+
+  for (var key in obj) {
+    var val = obj[key];
+
+    if (val && (val.constructor === Object || val.constructor === Array) && !isEmpty(val)) {
+      //Recursion for embedded objects
+      console.log('VAL', val)
+      var obj2 = objToPaths(val);
+
+      for (var key2 in obj2) {
+        var val2 = obj2[key2];
+
+        ret[key + separator + key2] = val2;
+      }
+    } else {
+      ret[key] = val;
+    }
+  }
+
+  return ret;
+}
+
+export function isObject(obj: any): obj is Object {
   return obj === Object(obj);
 }
 

@@ -16,16 +16,8 @@ export declare class Request {
     withCredentials(ret: any): Request;
     end(data?: any): IPromise<string>;
     json(data?: any): IPromise<Object>;
-    progress(fn: any): Request;
+    progress(fn: any): this;
     header(field: string, value: string): Request;
-}
-export declare enum HttpMethod {
-    Get = 0,
-    Post = 1,
-    Put = 2,
-    Delete = 3,
-    Patch = 4,
-    Head = 5,
 }
 export interface IRequest {
     get(url: string): Request;
