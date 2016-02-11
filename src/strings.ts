@@ -1,4 +1,7 @@
 
+export function isString(a:any): a is string {
+    return typeof a === 'string';
+}
 
 export function camelcase(input) {
   return input.toLowerCase().replace(/-(.)/g, function(match, group1) {

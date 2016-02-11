@@ -1,7 +1,7 @@
 import {equal, callFunc} from './utils'
 import {any} from './arrays'
 
-export function isObject(obj: any): boolean {
+export function isObject(obj: any): obj is Object {
   return obj === Object(obj);
 }
 

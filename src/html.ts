@@ -1,5 +1,11 @@
 
 import {indexOf, unique} from './arrays'
+
+var _hasClass: (elm: HTMLElement, className: string) => boolean;
+var _removeClass: (elm: HTMLElement, ...classNames: string[]) => void;
+var _addClass: (elm: HTMLElement, ...className: string[]) => void;
+
+
 var ElementProto: any = (typeof Element !== 'undefined' && Element.prototype) || {};
 
 var matchesSelector = ElementProto.matches ||
@@ -116,7 +122,6 @@ export function undelegate(elm: HTMLElement | string, selector: string, eventNam
   }
 }
 
-
 export function addClass(elm: HTMLElement, className: string) {
   if (elm.classList) {
     let split = className.split(' ');
@@ -146,12 +151,18 @@ export function removeClass(elm: HTMLElement, className: string) {
   }
 }
 
-export function hasClass(elm: HTMLElement, className: string) {
+
+
+export function hasClass(elm: HTMLElement, className: string): boolean {
   if (elm.classList) {
     return elm.classList.contains(className);
   }
   var reg = new RegExp('\b' + className)
   return reg.test(elm.className)
+}
+
+export function toggleClass(elm:HTMLElement, ...classNames: string[]) {
+
 }
 
 export function selectionStart(elm: HTMLInputElement): number {
@@ -212,3 +223,4 @@ export const domReady = (function() {
     loaded ? setTimeout(fn, 0) : fns.push(fn)
   }
 });
+

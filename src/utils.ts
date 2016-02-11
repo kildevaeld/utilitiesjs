@@ -92,7 +92,7 @@ export function callFunc(fn: Function, ctx: any, args: any[] = []): any {
 export function equal(a: any, b: any): boolean {
   return eq(a, b, [], [])
 }
-
+// Deprecate
 export function triggerMethodOn(obj: any, eventName: string, args?: any[]) {
 
   let ev = camelcase("on-" + eventName.replace(':', '-'))
@@ -118,7 +118,7 @@ export function getOption(option: string, objs: any[]): any {
   return null
 }
 
-export function inherits<T extends FunctionConstructor, U>(parent:T, protoProps: Object, staticProps?: Object): T {
+export function inherits<T extends FunctionConstructor, U>(parent:T, protoProps: U, staticProps?: Object): T & U {
   var child;
 
   // The constructor function for the new subclass is either defined by you

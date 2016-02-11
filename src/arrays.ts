@@ -1,6 +1,10 @@
 
 import {equal} from './utils';
 
+export function isArray<T>(a:any): a is Array<T> {
+    return Array.isArray(a);
+}
+
 // Return a new array with duplicates removed
 export function unique(array: any[]): any[] {
   return array.filter(function(e, i) {

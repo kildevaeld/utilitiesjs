@@ -1,6 +1,7 @@
 import {ajax} from './utils'
 import {IPromise, Promise, deferred, Deferred} from './promises'
-  let xmlRe = /^(?:application|text)\/xml/,
+
+const xmlRe = /^(?:application|text)\/xml/,
       jsonRe = /^application\/json/,
       fileProto = /^file:/;
 
@@ -16,19 +17,37 @@ export function queryParam ( obj ): string {
 }
 
 var isValid = function(xhr, url) {
-
     return (xhr.status >= 200 && xhr.status < 300) ||
       (xhr.status === 304) ||
       (xhr.status === 0 && fileProto.test(url)) ||
       (xhr.status === 0 && window.location.protocol === 'file:')
   };
 
+
+export class Response {
+  code: number;
+}
+
 export class Request {
 
     private _xhr: XMLHttpRequest
     private _data: any
-    constructor (private _method: string, private _url: string) {
-      this._xhr = ajax()
+    private _headers: any
+    private _params: string
+    constructor (private _method: string, private _url: string,  params?: any) {
+      this._xhr = ajax();
+      this._headers = {};
+      this.params(params);
+    }
+
+    params(params:any): Request {
+      if (typeof params !== 'string') {
+        if (params === Object(params)) {
+          this._params = queryParam(params);
+        }
+      } else if(params[0] !== '?') { params = '?' + params }
+      this._params = params;
+      return this;
     }
 
     send (data:any): Request {
@@ -49,9 +68,10 @@ export class Request {
       this._xhr.addEventListener('readystatechange', () => {
         if (this._xhr.readyState !== XMLHttpRequest.DONE) return;
 
-        if (!isValid(this._xhr, this._url)) {
+        /*if (!isValid(this._xhr, this._url)) {
           return defer.reject(new Error('server responded with: ' + this._xhr.status));
-        }
+        }*/
+
 
 
         defer.resolve(this._xhr.responseText);
@@ -60,7 +80,11 @@ export class Request {
 
       data = this._data;
       let url = this._url;
+
+      let contentType = this._headers['Content-Type']||this._headers['content-type'];
+
       if (data && data === Object(data) /* && check for content-type */) {
+
         let d = queryParam(data)
         url += d
       }
@@ -98,7 +122,8 @@ export class Request {
     }
 
     header (field: string, value: string): Request {
-      this._xhr.setRequestHeader(field,value)
+      this._headers[field] = value;
+      //this._xhr.setRequestHeader(field,value)
       return this
     }
   }
