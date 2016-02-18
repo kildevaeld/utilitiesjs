@@ -90,6 +90,15 @@ export function pick(obj: Object, props: string[]): any {
   return out
 }
 
+export function omit(obj: Object, props: string[]): any {
+  let out = {};
+  for (let key in obj) {
+    if (!!~props.indexOf(key)) continue;
+    out[key] = obj[key];
+  }
+  return out
+}
+
 export function result(obj: any, prop: string, ctx?: any, args?: any[]): any {
   let ret = obj[prop]
   return (typeof ret === 'function') ? callFunc(ret, ctx, args || []) : ret

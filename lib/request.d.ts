@@ -16,7 +16,7 @@ export declare class Request {
     withCredentials(ret: any): Request;
     end(data?: any): IPromise<string>;
     json(data?: any): IPromise<Object>;
-    progress(fn: any): this;
+    progress(fn: any): Request;
     header(field: string, value: string): Request;
 }
 export interface IRequest {

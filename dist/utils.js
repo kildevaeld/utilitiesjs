@@ -456,6 +456,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return out;
 	}
 	exports.pick = pick;
+	function omit(obj, props) {
+	    var out = {};
+	    for (var key in obj) {
+	        if (!! ~props.indexOf(key)) continue;
+	        out[key] = obj[key];
+	    }
+	    return out;
+	}
+	exports.omit = omit;
 	function result(obj, prop, ctx, args) {
 	    var ret = obj[prop];
 	    return typeof ret === 'function' ? utils_1.callFunc(ret, ctx, args || []) : ret;
@@ -768,6 +777,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.delegate = delegate;
 	function undelegate(elm, selector, eventName, callback) {
+	    /*if (typeof selector === 'function') {
+	        listener = <Function>selector;
+	        selector = null;
+	      }*/
 	    var handlers = domEvents.slice();
 	    for (var i = 0, len = handlers.length; i < len; i++) {
 	        var item = handlers[i];
