@@ -899,6 +899,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	var xmlRe = /^(?:application|text)\/xml/,
 	    jsonRe = /^application\/json/,
 	    fileProto = /^file:/;
+	function queryStringToParams(qs) {
+	    var kvp,
+	        k,
+	        v,
+	        ls,
+	        params = {},
+	        decode = decodeURIComponent;
+	    var kvps = qs.split('&');
+	    for (var i = 0, l = kvps.length; i < l; i++) {
+	        var param = kvps[i];
+	        kvp = param.split('='), k = kvp[0], v = kvp[1];
+	        if (v == null) v = true;
+	        k = decode(k), v = decode(v), ls = params[k];
+	        if (Array.isArray(ls)) ls.push(v);else if (ls) params[k] = [ls, v];else params[k] = v;
+	    }
+	    return params;
+	}
+	exports.queryStringToParams = queryStringToParams;
 	function queryParam(obj) {
 	    return '?' + Object.keys(obj).reduce(function (a, k) {
 	        a.push(k + '=' + encodeURIComponent(obj[k]));return a;
@@ -913,6 +931,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._method = _method;
 	        this._url = _url;
 	        this._headers = {};
+	        this._params = {};
 	        this._xhr = utils_1.ajax();
 	    }
 	    Request.prototype.send = function (data) {
@@ -936,10 +955,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        data = this._data;
 	        var url = this._url;
-	        if (data && data === Object(data)) {
+	        if (data && data === Object(data) && this._method == 'GET') {
 	            var d = queryParam(data);
 	            url += d;
 	        }
+	        url = this._apply_params(url);
 	        this._xhr.open(this._method, url, true);
 	        for (var key in this._headers) {
 	            this._xhr.setRequestHeader(key, this._headers[key]);
@@ -950,6 +970,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Request.prototype.json = function (data) {
 	        var _this = this;
 	        this.header('content-type', 'application/json; charset=utf-8');
+	        if (!strings_1.isString(data)) {
+	            data = JSON.stringify(data);
+	        }
 	        return this.end(data).then(function (str) {
 	            var accepts = _this._xhr.getResponseHeader('content-type');
 	            if (jsonRe.test(accepts) && str !== '') {
@@ -971,6 +994,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	            objects_1.extend(this._headers, field);
 	        }
 	        return this;
+	    };
+	    Request.prototype.params = function (value) {
+	        objects_1.extend(this._params, value);
+	        return this;
+	    };
+	    Request.prototype._apply_params = function (url) {
+	        var params = {};
+	        var idx = url.indexOf('?');
+	        if (idx > -1) {
+	            params = objects_1.extend(params, queryStringToParams(url.substr(idx + 1)));
+	            url = url.substr(0, idx);
+	        }
+	        objects_1.extend(params, this._params);
+	        if (!objects_1.isEmpty(params)) {
+	            var sep = url.indexOf('?') === -1 ? '?' : '&';
+	            url += sep + queryParam(params);
+	        }
+	        return url;
 	    };
 	    return Request;
 	})();

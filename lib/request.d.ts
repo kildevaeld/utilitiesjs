@@ -1,4 +1,5 @@
 import { IPromise } from './promises';
+export declare function queryStringToParams(qs: string): Object;
 export interface Deferrable<U> {
     promise: IPromise<U>;
     done: (error: Error, result: U) => void;
@@ -12,6 +13,7 @@ export declare class Request {
     private _xhr;
     private _data;
     private _headers;
+    private _params;
     constructor(_method: string, _url: string);
     send(data: any): Request;
     withCredentials(ret: any): Request;
@@ -21,6 +23,8 @@ export declare class Request {
     header(field: string | {
         [key: string]: string;
     }, value?: string): Request;
+    params(value: any): Request;
+    private _apply_params(url);
 }
 export interface IRequest {
     get(url: string): Request;

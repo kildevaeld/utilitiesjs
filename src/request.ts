@@ -1,10 +1,25 @@
 import {ajax} from './utils'
 import {isString} from './strings';
-import {isObject, extend} from './objects';
+import {isObject, extend, isEmpty} from './objects';
 import {IPromise, Promise, deferred, Deferred} from './promises'
   let xmlRe = /^(?:application|text)\/xml/,
       jsonRe = /^application\/json/,
       fileProto = /^file:/;
+
+export function queryStringToParams(qs: string): Object {
+    var kvp, k, v, ls, params = {}, decode = decodeURIComponent;
+    var kvps = qs.split('&');
+    for (var i = 0, l = kvps.length; i < l; i++) {
+      var param = kvps[i];
+      kvp = param.split('='), k = kvp[0], v = kvp[1];
+      if (v == null) v = true;
+      k = decode(k), v = decode(v), ls = params[k];
+      if (Array.isArray(ls)) ls.push(v);
+      else if (ls) params[k] = [ls, v];
+      else params[k] = v;
+    }
+    return params;
+  }
 
 export interface Deferrable<U> {
   promise: IPromise<U>
@@ -30,6 +45,7 @@ export class Request {
     private _xhr: XMLHttpRequest
     private _data: any
     private _headers: { [key: string]: string } = {};
+    private _params: { [key: string]: any } = {};
     constructor (private _method: string, private _url: string) {
       this._xhr = ajax();
     }
@@ -63,10 +79,12 @@ export class Request {
 
       data = this._data;
       let url = this._url;
-      if (data && data === Object(data) /* && check for content-type */) {
+      if (data && data === Object(data) && this._method == 'GET' /* && check for content-type */) {
         let d = queryParam(data)
         url += d
       }
+
+      url = this._apply_params(url);
 
       this._xhr.open(this._method, url, true);
 
@@ -82,6 +100,9 @@ export class Request {
 
     json (data?: any): IPromise<Object> {
       this.header('content-type', 'application/json; charset=utf-8');
+      if (!isString(data)) {
+        data = JSON.stringify(data);
+      }
       return this.end(data)
       .then<Object>((str) => {
         let accepts = this._xhr.getResponseHeader('content-type')
@@ -110,6 +131,28 @@ export class Request {
       }
 
       return this
+    }
+    params (value:any) {
+      extend(this._params, value);
+      return this;
+    }
+
+    private _apply_params (url: string): string {
+      let params = {};
+      let idx = url.indexOf('?');
+      if (idx > -1) {
+        params = extend(params, queryStringToParams(url.substr(idx + 1)));
+        url = url.substr(0, idx);
+      }
+
+      extend(params, this._params);
+
+      if (!isEmpty(params)) {
+        var sep = (url.indexOf('?') === -1) ? '?' : '&';
+        url += sep + queryParam(params);
+      }
+
+      return url;
     }
   }
 
