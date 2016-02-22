@@ -1,4 +1,6 @@
 import {ajax} from './utils'
+import {isString} from './strings';
+import {isObject, extend} from './objects';
 import {IPromise, Promise, deferred, Deferred} from './promises'
   let xmlRe = /^(?:application|text)\/xml/,
       jsonRe = /^application\/json/,
@@ -27,8 +29,9 @@ export class Request {
 
     private _xhr: XMLHttpRequest
     private _data: any
+    private _headers: { [key: string]: string } = {};
     constructor (private _method: string, private _url: string) {
-      this._xhr = ajax()
+      this._xhr = ajax();
     }
 
     send (data:any): Request {
@@ -67,7 +70,9 @@ export class Request {
 
       this._xhr.open(this._method, url, true);
 
-
+      for (let key in this._headers) {
+        this._xhr.setRequestHeader(key, this._headers[key]);
+      }
 
       this._xhr.send(data);
 
@@ -76,7 +81,7 @@ export class Request {
     }
 
     json (data?: any): IPromise<Object> {
-
+      this.header('content-type', 'application/json; charset=utf-8');
       return this.end(data)
       .then<Object>((str) => {
         let accepts = this._xhr.getResponseHeader('content-type')
@@ -97,8 +102,13 @@ export class Request {
       return this;
     }
 
-    header (field: string, value: string): Request {
-      this._xhr.setRequestHeader(field,value)
+    header (field: string|{[key:string]: string}, value?: string): Request {
+      if (isString(field) && isString(value)) {
+        this._headers[field] = value;
+      } else if (isObject(field)) {
+        extend(this._headers, field);
+      }
+
       return this
     }
   }

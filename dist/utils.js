@@ -520,6 +520,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	function isString(a) {
+	    return typeof a === 'string';
+	}
+	exports.isString = isString;
 	function camelcase(input) {
 	    return input.toLowerCase().replace(/-(.)/g, function (match, group1) {
 	        return group1.toUpperCase();
@@ -889,6 +893,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var utils_1 = __webpack_require__(2);
+	var strings_1 = __webpack_require__(4);
+	var objects_1 = __webpack_require__(3);
 	var promises_1 = __webpack_require__(5);
 	var xmlRe = /^(?:application|text)\/xml/,
 	    jsonRe = /^application\/json/,
@@ -906,6 +912,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function Request(_method, _url) {
 	        this._method = _method;
 	        this._url = _url;
+	        this._headers = {};
 	        this._xhr = utils_1.ajax();
 	    }
 	    Request.prototype.send = function (data) {
@@ -934,11 +941,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	            url += d;
 	        }
 	        this._xhr.open(this._method, url, true);
+	        for (var key in this._headers) {
+	            this._xhr.setRequestHeader(key, this._headers[key]);
+	        }
 	        this._xhr.send(data);
 	        return defer.promise;
 	    };
 	    Request.prototype.json = function (data) {
 	        var _this = this;
+	        this.header('content-type', 'application/json; charset=utf-8');
 	        return this.end(data).then(function (str) {
 	            var accepts = _this._xhr.getResponseHeader('content-type');
 	            if (jsonRe.test(accepts) && str !== '') {
@@ -954,7 +965,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this;
 	    };
 	    Request.prototype.header = function (field, value) {
-	        this._xhr.setRequestHeader(field, value);
+	        if (strings_1.isString(field) && strings_1.isString(value)) {
+	            this._headers[field] = value;
+	        } else if (objects_1.isObject(field)) {
+	            objects_1.extend(this._headers, field);
+	        }
 	        return this;
 	    };
 	    return Request;

@@ -11,13 +11,16 @@ export declare class Request {
     private _url;
     private _xhr;
     private _data;
+    private _headers;
     constructor(_method: string, _url: string);
     send(data: any): Request;
     withCredentials(ret: any): Request;
     end(data?: any): IPromise<string>;
     json(data?: any): IPromise<Object>;
     progress(fn: any): Request;
-    header(field: string, value: string): Request;
+    header(field: string | {
+        [key: string]: string;
+    }, value?: string): Request;
 }
 export interface IRequest {
     get(url: string): Request;
