@@ -105,22 +105,27 @@ export class Request {
         data = JSON.stringify(data);
       }
       return this.end(data)
-      .then<Object>((str) => {
-        let accepts = this._xhr.getResponseHeader('content-type')
+        .then<Object>((str) => {
+          let accepts = this._xhr.getResponseHeader('content-type')
 
-        if (jsonRe.test(accepts) && str !== '') {
-          let json = JSON.parse(str)
-          return json
-        } else {
-          throw new Error('json')
-        }
+          if (jsonRe.test(accepts) && str !== '') {
+            let json = JSON.parse(str)
+            return json
+          } else {
+            throw new Error('json')
+          }
 
 
-      })
+        });
     }
 
-    progress (fn) {
+    progres (fn) {
       this._xhr.addEventListener('progress', fn);
+      return this;
+    }
+
+    uploadProgress (fn) {
+      this._xhr.upload.addEventListener('progress', fn);
       return this;
     }
 

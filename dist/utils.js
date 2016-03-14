@@ -984,8 +984,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        });
 	    };
-	    Request.prototype.progress = function (fn) {
+	    Request.prototype.progres = function (fn) {
 	        this._xhr.addEventListener('progress', fn);
+	        return this;
+	    };
+	    Request.prototype.uploadProgress = function (fn) {
+	        this._xhr.upload.addEventListener('progress', fn);
 	        return this;
 	    };
 	    Request.prototype.header = function (field, value) {
