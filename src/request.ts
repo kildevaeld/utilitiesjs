@@ -29,7 +29,7 @@ export interface Deferrable<U> {
 }
 
 export function queryParam ( obj ): string {
-  return '?'+Object.keys(obj).reduce(function(a,k){a.push(k+'='+encodeURIComponent(obj[k]));return a},[]).join('&')
+  return Object.keys(obj).reduce(function(a,k){a.push(k+'='+encodeURIComponent(obj[k]));return a},[]).join('&')
 }
 
 var isValid = function(xhr, url) {
@@ -80,7 +80,8 @@ export class Request {
       data = this._data;
       let url = this._url;
       if (data && data === Object(data) && this._method == 'GET' /* && check for content-type */) {
-        let d = queryParam(data)
+        var sep = (url.indexOf('?') === -1) ? '?' : '&';
+        let d = sep + queryParam(data)
         url += d
       }
 

@@ -918,7 +918,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.queryStringToParams = queryStringToParams;
 	function queryParam(obj) {
-	    return '?' + Object.keys(obj).reduce(function (a, k) {
+	    return Object.keys(obj).reduce(function (a, k) {
 	        a.push(k + '=' + encodeURIComponent(obj[k]));return a;
 	    }, []).join('&');
 	}
@@ -956,7 +956,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        data = this._data;
 	        var url = this._url;
 	        if (data && data === Object(data) && this._method == 'GET') {
-	            var d = queryParam(data);
+	            var sep = url.indexOf('?') === -1 ? '?' : '&';
+	            var d = sep + queryParam(data);
 	            url += d;
 	        }
 	        url = this._apply_params(url);
