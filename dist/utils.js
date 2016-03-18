@@ -957,6 +957,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        var _a;
 	    };
+	    Html.prototype.text = function (str) {
+	        if (arguments.length === 0) {
+	            return this.length > 0 ? this.get(0).textContent : null;
+	        }
+	        return this.forEach(function (e) {
+	            return e.textContent = str;
+	        });
+	    };
+	    Html.prototype.html = function (html) {
+	        if (arguments.length === 0) {
+	            return this.length > 0 ? this.get(0).innerHTML : null;
+	        }
+	        return this.forEach(function (e) {
+	            return e.innerHTML = html;
+	        });
+	    };
 	    Html.prototype.parent = function () {
 	        var out = [];
 	        this.forEach(function (e) {

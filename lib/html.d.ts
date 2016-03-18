@@ -20,6 +20,8 @@ export declare class Html {
     removeClass(str: string): Html;
     hasClass(str: string): boolean;
     attr(key: string | Object, value?: any): Html | string;
+    text(str: string): any;
+    html(html: string): any;
     parent(): Html;
     find(str: string): Html;
     map<T>(fn: (elm: HTMLElement, index?: number) => T): T[];

@@ -295,6 +295,20 @@ export class Html {
     });
   }
 
+  text (str: string): any {
+    if (arguments.length === 0) {
+      return this.length > 0 ? this.get(0).textContent : null;
+    }
+    return this.forEach(e => e.textContent = str);
+  }
+
+  html(html: string): any {
+    if (arguments.length === 0) {
+      return this.length > 0 ? this.get(0).innerHTML : null;
+    }
+    return this.forEach(e => e.innerHTML = html);
+  }
+
   parent(): Html {
     var out = [];
     this.forEach(e => {
