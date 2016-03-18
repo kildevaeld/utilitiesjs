@@ -10,3 +10,18 @@ export declare function selectionStart(elm: HTMLInputElement): number;
 export declare function transitionEnd(elm: Element, fn: (event: TransitionEvent) => void, ctx?: any, duration?: number): void;
 export declare function animationEnd(elm: Element, fn: (event: AnimationEvent) => void, ctx?: any, duration?: number): void;
 export declare const domReady: () => (fn: any) => void;
+export declare class Html {
+    static query(query: string | HTMLElement | NodeList, context?: string | HTMLElement | NodeList): Html;
+    private _elements;
+    length: number;
+    constructor(el: HTMLElement[]);
+    get(n: number): HTMLElement;
+    addClass(str: string): Html;
+    removeClass(str: string): Html;
+    hasClass(str: string): boolean;
+    attr(key: string | Object, value?: any): Html | string;
+    parent(): Html;
+    find(str: string): Html;
+    map<T>(fn: (elm: HTMLElement, index?: number) => T): T[];
+    forEach(fn: (elm: HTMLElement, index: number) => void): Html;
+}

@@ -704,6 +704,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var arrays_1 = __webpack_require__(1);
+	var objects_1 = __webpack_require__(3);
 	var ElementProto = typeof Element !== 'undefined' && Element.prototype || {};
 	var matchesSelector = ElementProto.matches || ElementProto.webkitMatchesSelector || ElementProto.mozMatchesSelector || ElementProto.msMatchesSelector || ElementProto.oMatchesSelector || function (selector) {
 	    var nodeList = (this.parentNode || document).querySelectorAll(selector) || [];
@@ -885,6 +886,107 @@ return /******/ (function(modules) { // webpackBootstrap
 	        loaded ? setTimeout(fn, 0) : fns.push(fn);
 	    };
 	};
+	var Html = (function () {
+	    function Html(el) {
+	        if (!Array.isArray(el)) el = [el];
+	        this._elements = el || [];
+	    }
+	    Html.query = function (query, context) {
+	        if (typeof context === 'string') {
+	            context = document.querySelectorAll(context);
+	        }
+	        var html;
+	        var els;
+	        if (typeof query === 'string') {
+	            if (context) {
+	                if (context instanceof HTMLElement) {
+	                    els = arrays_1.slice(context.querySelectorAll(query));
+	                } else {
+	                    html = new Html(arrays_1.slice(context));
+	                    return html.find(query);
+	                }
+	            } else {
+	                els = arrays_1.slice(document.querySelectorAll(query));
+	            }
+	        } else if (query && query instanceof Element) {
+	            els = [query];
+	        } else if (query && query instanceof NodeList) {
+	            els = arrays_1.slice(query);
+	        }
+	        return new Html(els);
+	    };
+	    Object.defineProperty(Html.prototype, "length", {
+	        get: function get() {
+	            return this._elements.length;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Html.prototype.get = function (n) {
+	        n = n === undefined ? 0 : n;
+	        return n >= this.length ? undefined : this._elements[n];
+	    };
+	    Html.prototype.addClass = function (str) {
+	        return this.forEach(function (e) {
+	            addClass(e, str);
+	        });
+	    };
+	    Html.prototype.removeClass = function (str) {
+	        return this.forEach(function (e) {
+	            removeClass(e, str);
+	        });
+	    };
+	    Html.prototype.hasClass = function (str) {
+	        return this._elements.reduce(function (p, c) {
+	            return hasClass(c, str);
+	        }, false);
+	    };
+	    Html.prototype.attr = function (key, value) {
+	        var attr;
+	        if (typeof key === 'string' && value) {
+	            attr = (_a = {}, _a[key] = value, _a);
+	        } else if (typeof key == 'string') {
+	            if (this.length) return this.get(0).getAttribute(key);
+	        } else if (objects_1.isObject(key)) {
+	            attr = key;
+	        }
+	        return this.forEach(function (e) {
+	            for (var k in attr) {
+	                e.setAttribute(k, attr[k]);
+	            }
+	        });
+	        var _a;
+	    };
+	    Html.prototype.parent = function () {
+	        var out = [];
+	        this.forEach(function (e) {
+	            if (e.parentElement) {
+	                out.push(e.parentElement);
+	            }
+	        });
+	        return new Html(out);
+	    };
+	    Html.prototype.find = function (str) {
+	        var out = [];
+	        this.forEach(function (e) {
+	            out = out.concat(arrays_1.slice(e.querySelectorAll(str)));
+	        });
+	        return new Html(out);
+	    };
+	    Html.prototype.map = function (fn) {
+	        var out = new Array(this.length);
+	        this.forEach(function (e, i) {
+	            out[i] = fn(e, i);
+	        });
+	        return out;
+	    };
+	    Html.prototype.forEach = function (fn) {
+	        this._elements.forEach(fn);
+	        return this;
+	    };
+	    return Html;
+	})();
+	exports.Html = Html;
 
 /***/ },
 /* 7 */
