@@ -33,7 +33,6 @@ export function queryParam ( obj ): string {
 }
 
 var isValid = function(xhr, url) {
-
     return (xhr.status >= 200 && xhr.status < 300) ||
       (xhr.status === 304) ||
       (xhr.status === 0 && fileProto.test(url)) ||
@@ -119,12 +118,16 @@ export class Request {
         });
     }
 
-    progres (fn) {
+    /**
+     * Monitor download progress
+     * @param {Function} fn
+     */
+    progress(fn: (e:ProgressEvent) => void) {
       this._xhr.addEventListener('progress', fn);
       return this;
     }
 
-    uploadProgress (fn) {
+    uploadProgress (fn:(e:ProgressEvent) => void) {
       this._xhr.upload.addEventListener('progress', fn);
       return this;
     }
@@ -138,6 +141,7 @@ export class Request {
 
       return this
     }
+
     params (value:any) {
       extend(this._params, value);
       return this;

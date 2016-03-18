@@ -19,8 +19,8 @@ export declare class Request {
     withCredentials(ret: any): Request;
     end(data?: any): IPromise<string>;
     json(data?: any): IPromise<Object>;
-    progres(fn: any): Request;
-    uploadProgress(fn: any): Request;
+    progress(fn: (e: ProgressEvent) => void): Request;
+    uploadProgress(fn: (e: ProgressEvent) => void): Request;
     header(field: string | {
         [key: string]: string;
     }, value?: string): Request;
