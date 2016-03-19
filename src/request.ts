@@ -43,7 +43,7 @@ export class Request {
 
     private _xhr: XMLHttpRequest
     private _data: any
-    private _headers: { [key: string]: string } = {};
+    private _headers: { [key: string]: string } = { 'X-Requested-With': 'XMLHttpRequest' };
     private _params: { [key: string]: any } = {};
     constructor (private _method: string, private _url: string) {
       this._xhr = ajax();

@@ -22,6 +22,7 @@ export declare class Html {
     attr(key: string | Object, value?: any): Html | string;
     text(str: string): any;
     html(html: string): any;
+    css(attr: string | any, value?: any): Html;
     parent(): Html;
     find(str: string): Html;
     map<T>(fn: (elm: HTMLElement, index?: number) => T): T[];

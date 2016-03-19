@@ -973,6 +973,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return e.innerHTML = html;
 	        });
 	    };
+	    Html.prototype.css = function (attr, value) {
+	        if (arguments.length === 2) {
+	            return this.forEach(function (e) {
+	                if (attr in e.style) e.style[attr] = String(value);
+	            });
+	        } else {
+	            return this.forEach(function (e) {
+	                for (var k in attr) {
+	                    if (attr in e.style) e.style[k] = String(attr[k]);
+	                }
+	            });
+	        }
+	    };
 	    Html.prototype.parent = function () {
 	        var out = [];
 	        this.forEach(function (e) {
@@ -1048,7 +1061,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function Request(_method, _url) {
 	        this._method = _method;
 	        this._url = _url;
-	        this._headers = {};
+	        this._headers = { 'X-Requested-With': 'XMLHttpRequest' };
 	        this._params = {};
 	        this._xhr = utils_1.ajax();
 	    }

@@ -309,6 +309,20 @@ export class Html {
     return this.forEach(e => e.innerHTML = html);
   }
 
+  css(attr:string|any, value?:any) {
+    if (arguments.length === 2) {
+      return this.forEach(e => {
+        if (attr in e.style) e.style[attr] = String(value);
+      });
+    } else {
+      return this.forEach(e => {
+        for (let k in attr) {
+          if (attr in e.style) e.style[k] = String(attr[k]);
+        }
+      });
+    }
+  }
+
   parent(): Html {
     var out = [];
     this.forEach(e => {
