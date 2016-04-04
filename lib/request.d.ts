@@ -19,12 +19,12 @@ export declare class Request {
     withCredentials(ret: any): Request;
     end(data?: any): IPromise<string>;
     json(data?: any): IPromise<Object>;
-    progress(fn: (e: ProgressEvent) => void): Request;
-    uploadProgress(fn: (e: ProgressEvent) => void): Request;
+    progress(fn: (e: ProgressEvent) => void): this;
+    uploadProgress(fn: (e: ProgressEvent) => void): this;
     header(field: string | {
         [key: string]: string;
     }, value?: string): Request;
-    params(value: any): Request;
+    params(value: any): this;
     private _apply_params(url);
 }
 export interface IRequest {

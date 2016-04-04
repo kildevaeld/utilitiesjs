@@ -17,7 +17,7 @@ export function objToPaths(obj:Object, separator:string = ".") {
 
     if (val && (val.constructor === Object || val.constructor === Array) && !isEmpty(val)) {
       //Recursion for embedded objects
-      console.log('VAL', val)
+      
       var obj2 = objToPaths(val);
 
       for (var key2 in obj2) {

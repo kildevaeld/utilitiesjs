@@ -54,8 +54,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
+	"use strict";
 	function __export(m) {
 	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 	}
@@ -65,15 +64,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(2));
 	__export(__webpack_require__(4));
 	__export(__webpack_require__(6));
-	__export(__webpack_require__(7));
-	__export(__webpack_require__(8));
+	__export(__webpack_require__(10));
+	__export(__webpack_require__(11));
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
+	"use strict";
 	var utils_1 = __webpack_require__(2);
 	function unique(array) {
 	    return array.filter(function (e, i) {
@@ -144,8 +142,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
+	"use strict";
 	var objects_1 = __webpack_require__(3);
 	var arrays_1 = __webpack_require__(1);
 	var strings_1 = __webpack_require__(4);
@@ -247,8 +244,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.triggerMethodOn = triggerMethodOn;
 	function getOption(option, objs) {
-	    for (var _i = 0; _i < objs.length; _i++) {
-	        var o = objs[_i];
+	    for (var _i = 0, objs_1 = objs; _i < objs_1.length; _i++) {
+	        var o = objs_1[_i];
 	        if (objects_1.isObject(o) && o[option]) return o[option];
 	    }
 	    return null;
@@ -365,8 +362,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
+	"use strict";
 	var utils_1 = __webpack_require__(2);
 	var arrays_1 = __webpack_require__(1);
 	function objToPaths(obj, separator) {
@@ -377,7 +373,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    for (var key in obj) {
 	        var val = obj[key];
 	        if (val && (val.constructor === Object || val.constructor === Array) && !isEmpty(val)) {
-	            console.log('VAL', val);
 	            var obj2 = objToPaths(val);
 	            for (var key2 in obj2) {
 	                var val2 = obj2[key2];
@@ -405,8 +400,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    if (!isObject(obj)) return obj;
 	    var o, k;
-	    for (var _a = 0; _a < args.length; _a++) {
-	        o = args[_a];
+	    for (var _a = 0, args_1 = args; _a < args_1.length; _a++) {
+	        o = args_1[_a];
 	        if (!isObject(o)) continue;
 	        for (k in o) {
 	            if (has(o, k)) obj[k] = o[k];
@@ -449,8 +444,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function pick(obj, props) {
 	    var out = {},
 	        prop;
-	    for (var _i = 0; _i < props.length; _i++) {
-	        prop = props[_i];
+	    for (var _i = 0, props_1 = props; _i < props_1.length; _i++) {
+	        prop = props_1[_i];
 	        if (has(obj, prop)) out[prop] = obj[prop];
 	    }
 	    return out;
@@ -518,8 +513,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 4 */
 /***/ function(module, exports) {
 
-	'use strict';
-
+	"use strict";
 	function isString(a) {
 	    return typeof a === 'string';
 	}
@@ -558,8 +552,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
-
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
 	var objects_1 = __webpack_require__(3);
 	var arrays_1 = __webpack_require__(1);
 	var utils_1 = __webpack_require__(2);
@@ -701,10 +694,169 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	__export(__webpack_require__(7));
+	__export(__webpack_require__(9));
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {"use strict";
+	(function (Browser) {
+	    Browser[Browser["Chrome"] = 0] = "Chrome";
+	    Browser[Browser["Explorer"] = 1] = "Explorer";
+	    Browser[Browser["Firefox"] = 2] = "Firefox";
+	    Browser[Browser["Safari"] = 3] = "Safari";
+	    Browser[Browser["Opera"] = 4] = "Opera";
+	    Browser[Browser["Unknown"] = 5] = "Unknown";
+	})(exports.Browser || (exports.Browser = {}));
+	var Browser = exports.Browser;
+	var browser = (function () {
+	    var ua = navigator.userAgent;
+	    if (!! ~ua.indexOf('MSIE')) return Browser.Explorer;
+	    var isOpera = !! ~ua.toLowerCase().indexOf('op'),
+	        isChrome = !! ~ua.indexOf('Chrome'),
+	        isSafari = !! ~ua.indexOf('Safari');
+	    if (isChrome && isSafari) return Browser.Safari;
+	    if (isChrome && isOpera) return Browser.Opera;
+	    if (isChrome) return Browser.Chrome;
+	    return Browser.Unknown;
+	})();
+	var is_node = (function () {
+	    try {
+	        return 'object' === typeof process && Object.prototype.toString.call(process) === '[object process]';
+	    } catch (e) {
+	        return false;
+	    }
+	})();
+	function isNode() {
+	    return is_node;
+	}
+	exports.isNode = isNode;
+	function isSafari() {
+	    return browser === Browser.Safari;
+	}
+	exports.isSafari = isSafari;
+	function isChrome() {
+	    return browser === Browser.Chrome;
+	}
+	exports.isChrome = isChrome;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	// shim for using process in browser
+
 	'use strict';
 
+	var process = module.exports = {};
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = setTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while (len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    clearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        setTimeout(drainQueue, 0);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () {
+	    return '/';
+	};
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function () {
+	    return 0;
+	};
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
 	var arrays_1 = __webpack_require__(1);
 	var objects_1 = __webpack_require__(3);
+	var utils_1 = __webpack_require__(7);
 	var ElementProto = typeof Element !== 'undefined' && Element.prototype || {};
 	var matchesSelector = ElementProto.matches || ElementProto.webkitMatchesSelector || ElementProto.mozMatchesSelector || ElementProto.msMatchesSelector || ElementProto.oMatchesSelector || function (selector) {
 	    var nodeList = (this.parentNode || document).querySelectorAll(selector) || [];
@@ -750,15 +902,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return matchesSelector.call(elm, selector);
 	}
 	exports.matches = matches;
-	function addEventListener(elm, eventName, listener, useCap) {
-	    if (useCap === void 0) {
-	        useCap = false;
+	function addEventListener(elm, eventName, listener, capture) {
+	    if (capture === void 0) {
+	        capture = false;
 	    }
-	    elementAddEventListener.call(elm, eventName, listener, useCap);
+	    if (utils_1.isSafari() && elm === window) {
+	        elm.addEventListener(eventName, listener, capture);
+	    } else {
+	        elementAddEventListener.call(elm, eventName, listener, capture);
+	    }
 	}
 	exports.addEventListener = addEventListener;
 	function removeEventListener(elm, eventName, listener) {
-	    elementRemoveEventListener.call(elm, eventName, listener);
+	    if (utils_1.isSafari() && elm === window) {
+	        elm.removeEventListener(eventName, listener);
+	    } else {
+	        elementRemoveEventListener.call(elm, eventName, listener);
+	    }
 	}
 	exports.removeEventListener = removeEventListener;
 	var unbubblebles = 'focus blur change'.split(' ');
@@ -777,19 +937,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    var useCap = !! ~unbubblebles.indexOf(eventName);
 	    addEventListener(elm, eventName, handler, useCap);
-	    domEvents.push({ eventName: eventName, handler: handler, listener: callback, selector: selector });
+	    domEvents.push({ elm: elm, eventName: eventName, handler: handler, listener: callback, selector: selector });
 	    return handler;
 	}
 	exports.delegate = delegate;
 	function undelegate(elm, selector, eventName, callback) {
-	    /*if (typeof selector === 'function') {
-	        listener = <Function>selector;
-	        selector = null;
-	      }*/
 	    var handlers = domEvents.slice();
 	    for (var i = 0, len = handlers.length; i < len; i++) {
 	        var item = handlers[i];
-	        var match = item.eventName === eventName && (callback ? item.listener === callback : true) && (selector ? item.selector === selector : true);
+	        var match = elm === item.elm && (eventName ? item.eventName === eventName : true) && (callback ? item.listener === callback : true) && (selector ? item.selector === selector : true);
 	        if (!match) continue;
 	        removeEventListener(elm, item.eventName, item.handler);
 	        domEvents.splice(arrays_1.indexOf(handlers, item), 1);
@@ -818,7 +974,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var split = elm.className.split(' '),
 	            classNames = className.split(' '),
 	            tmp = split,
-	            index;
+	            index = void 0;
 	        for (var i = 0, ii = classNames.length; i < ii; i++) {
 	            index = split.indexOf(classNames[i]);
 	            if (!! ~index) split = split.splice(index, 1);
@@ -957,6 +1113,59 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        var _a;
 	    };
+	    Html.prototype._setValue = function (node, value) {
+	        var type = node.type || "";
+	        var isCheckbox = /checkbox/.test(type);
+	        var isRadio = /radio/.test(type);
+	        var isRadioOrCheckbox = isCheckbox || isRadio;
+	        var hasValue = Object.prototype.hasOwnProperty.call(node, "value");
+	        var isInput = hasValue || /input|textarea|checkbox/.test(node.nodeName.toLowerCase());
+	        var isSelect = /select/i.test(node.nodeName);
+	        if (value == null) value = "";
+	        if (isRadioOrCheckbox) {
+	            if (isRadio) {
+	                if (String(value) === String(node.value)) {
+	                    node.checked = true;
+	                }
+	            } else {
+	                node.checked = value;
+	            }
+	        } else {
+	            if (isInput || isSelect) {
+	                node.value = value;
+	            } else {
+	                node.textContent = value;
+	            }
+	        }
+	    };
+	    Html.prototype._getValue = function (node) {
+	        var type = node.type || "";
+	        var isCheckbox = /checkbox/.test(type);
+	        var isRadio = /radio/.test(type);
+	        var isRadioOrCheckbox = isCheckbox || isRadio;
+	        var hasValue = Object.prototype.hasOwnProperty.call(node, "value");
+	        var isInput = hasValue || /input|textarea|checkbox/.test(node.nodeName.toLowerCase());
+	        var isSelect = /select/i.test(node.nodeName);
+	        if (isCheckbox) {
+	            return Boolean(node.checked);
+	        } else if (isInput || isSelect) {
+	            return node.value || "";
+	        } else {
+	            return node.textContent || "";
+	        }
+	    };
+	    Html.prototype.val = function (value) {
+	        var _this = this;
+	        if (arguments.length === 0) {
+	            var first = this.get(0);
+	            if (first === undefined) return undefined;
+	            return this._getValue(first);
+	        } else {
+	            return this.forEach(function (e) {
+	                return _this._setValue(e, value);
+	            });
+	        }
+	    };
 	    Html.prototype.text = function (str) {
 	        if (arguments.length === 0) {
 	            return this.length > 0 ? this.get(0).textContent : null;
@@ -1018,11 +1227,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.Html = Html;
 
 /***/ },
-/* 7 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
+	"use strict";
 	var utils_1 = __webpack_require__(2);
 	var strings_1 = __webpack_require__(4);
 	var objects_1 = __webpack_require__(3);
@@ -1160,11 +1368,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 8 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
+	"use strict";
 	var utils_1 = __webpack_require__(2);
 	var Debug = (function () {
 	    function Debug(namespace) {

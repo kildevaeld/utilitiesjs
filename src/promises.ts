@@ -1,4 +1,4 @@
-
+declare var global:any;
 import {isObject} from './objects'
 import {slice, flatten} from './arrays'
 import {callFunc, nextTick} from './utils'
