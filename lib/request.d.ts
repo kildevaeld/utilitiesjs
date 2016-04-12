@@ -1,4 +1,4 @@
-import { IPromise } from './promises';
+import { IPromise, Thenable } from './promises';
 export declare enum HttpMethod {
     GET = 0,
     PUT = 1,
@@ -6,12 +6,16 @@ export declare enum HttpMethod {
     DELETE = 3,
     HEAD = 4,
 }
+export interface Result<T> extends Thenable<T> {
+    json(): Thenable<T>;
+}
+export declare function isResponse(a: any): a is Response<any>;
 export declare class HttpError extends Error {
     status: number;
     message: string;
     body: any;
     url: string;
-    constructor(status: number, message: string, body?: any);
+    constructor(status: number | Response<any>, message?: string, body?: any);
 }
 export declare class ResponseError extends Error {
     constructor(message: string);
@@ -46,8 +50,8 @@ export declare class Request {
         [key: string]: any;
     }, value?: any): this;
     withCredentials(ret: any): Request;
-    json<T>(data?: any): IPromise<Response<T>>;
-    end<T>(data?: any): IPromise<Response<T>>;
+    json<T>(data?: any, throwOnInvalid?: boolean): IPromise<Response<T>>;
+    end<T>(data?: any, throwOnInvalid?: boolean): IPromise<Response<T>>;
     private _apply_params(url);
 }
 export interface IRequest {

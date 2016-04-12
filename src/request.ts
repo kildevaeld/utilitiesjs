@@ -1,10 +1,18 @@
 import {isString} from './strings';
 import {isEmpty, isObject, extend, has} from './objects'
-import {deferred, IPromise} from './promises';
+import {deferred, IPromise, Thenable} from './promises';
 import {ajax} from './utils';
 
 export enum HttpMethod {
     GET, PUT, POST, DELETE, HEAD
+}
+
+export interface Result<T> extends Thenable<T> {
+    json(): Thenable<T>;
+}
+
+export function isResponse(a:any): a is Response<any> {
+    return isObject(status) && has(a, 'status') && has(a, 'statusText') && has(a, 'body')
 }
 
 export class HttpError extends Error {
@@ -12,11 +20,24 @@ export class HttpError extends Error {
     message: string;
     body: any;
     url: string;
-    constructor(status: number, message: string, body?: any) {
+    constructor(status: number|Response<any>, message?: string, body?: any) {
         super(message);
-        this.status = status;
-        this.message = message;
-        this.body = body;
+        
+        if (arguments.length === 1) {
+            if (isResponse(status)) {
+                this.status = status.status;
+                this.message = status.statusText;
+                this.body = status.body;
+            } else {
+                this.status = status
+            }
+        } else {
+            this.status = <number>status;
+            this.message = message;
+            this.body = body;    
+        }
+        
+        
     }
 }
 
@@ -110,12 +131,12 @@ export class Request {
         return this;
     }
 
-    json<T>(data?: any): IPromise<Response<T>> {
+    json<T>(data?: any, throwOnInvalid:boolean = false): IPromise<Response<T>> {
         this.header('content-type', 'application/json; charset=utf-8');
         if (!isString(data)) {
             data = JSON.stringify(data);
         }
-        return this.end<string>(data)
+        return this.end<string>(data, throwOnInvalid)
             .then<Response<T>>((resp) => {
                 let accepts = this._xhr.getResponseHeader('content-type')
 
@@ -132,7 +153,7 @@ export class Request {
             });
     }
 
-    end<T>(data?: any): IPromise<Response<T>> {
+    end<T>(data?: any, throwOnInvalid:boolean = false): IPromise<Response<T>> {
 
         data = data || this._data;
 
@@ -170,6 +191,10 @@ export class Request {
             resp.body = this._xhr.response;
             resp.isValid = isValid(this._xhr, this._url);
 
+            if (!resp.isValid && throwOnInvalid) {
+                return defer.reject(new HttpError(resp));
+            }
+
             defer.resolve(resp);
 
 
@@ -199,6 +224,22 @@ export class Request {
         return defer.promise;
 
     }
+    
+    /*public result<T>(data: any) : Result<T> {
+       
+        return <Result<T>{
+            then (resolve, reject) {
+                
+            },
+            catch (reject) {
+                
+            },
+            json () {
+                
+            }
+        }
+        
+    }*/
 
     private _apply_params(url: string): string {
         let params = {};

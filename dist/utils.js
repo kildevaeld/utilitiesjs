@@ -1256,13 +1256,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	    HttpMethod[HttpMethod["HEAD"] = 4] = "HEAD";
 	})(exports.HttpMethod || (exports.HttpMethod = {}));
 	var HttpMethod = exports.HttpMethod;
+	function isResponse(a) {
+	    return objects_1.isObject(status) && objects_1.has(a, 'status') && objects_1.has(a, 'statusText') && objects_1.has(a, 'body');
+	}
+	exports.isResponse = isResponse;
 	var HttpError = (function (_super) {
 	    __extends(HttpError, _super);
 	    function HttpError(status, message, body) {
 	        _super.call(this, message);
-	        this.status = status;
-	        this.message = message;
-	        this.body = body;
+	        if (arguments.length === 1) {
+	            if (isResponse(status)) {
+	                this.status = status.status;
+	                this.message = status.statusText;
+	                this.body = status.body;
+	            } else {
+	                this.status = status;
+	            }
+	        } else {
+	            this.status = status;
+	            this.message = message;
+	            this.body = body;
+	        }
 	    }
 	    return HttpError;
 	})(Error);
@@ -1340,13 +1354,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._xhr.withCredentials = ret;
 	        return this;
 	    };
-	    Request.prototype.json = function (data) {
+	    Request.prototype.json = function (data, throwOnInvalid) {
 	        var _this = this;
+	        if (throwOnInvalid === void 0) {
+	            throwOnInvalid = false;
+	        }
 	        this.header('content-type', 'application/json; charset=utf-8');
 	        if (!strings_1.isString(data)) {
 	            data = JSON.stringify(data);
 	        }
-	        return this.end(data).then(function (resp) {
+	        return this.end(data, throwOnInvalid).then(function (resp) {
 	            var accepts = _this._xhr.getResponseHeader('content-type');
 	            if (jsonRe.test(accepts) && resp.body != "") {
 	                var json = JSON.parse(resp.body);
@@ -1358,8 +1375,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        });
 	    };
-	    Request.prototype.end = function (data) {
+	    Request.prototype.end = function (data, throwOnInvalid) {
 	        var _this = this;
+	        if (throwOnInvalid === void 0) {
+	            throwOnInvalid = false;
+	        }
 	        data = data || this._data;
 	        var defer = promises_1.deferred();
 	        this._xhr.addEventListener('readystatechange', function () {
@@ -1386,6 +1406,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (isNaN(resp.contentLength)) resp.contentLength = 0;
 	            resp.body = _this._xhr.response;
 	            resp.isValid = isValid(_this._xhr, _this._url);
+	            if (!resp.isValid && throwOnInvalid) {
+	                return defer.reject(new HttpError(resp));
+	            }
 	            defer.resolve(resp);
 	        });
 	        var method = HttpMethod[this._method];
