@@ -25,7 +25,7 @@ export declare function queryParam(obj: any): string;
 export interface Response<T> {
     status: number;
     statusText: string;
-    body: any;
+    body: T;
     headers: {
         [key: string]: string;
     };
