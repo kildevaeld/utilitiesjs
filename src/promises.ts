@@ -118,7 +118,7 @@ export interface Deferred<T> {
 	done: (error: Error, result: T) => void
 }
 
-export function deferred<T>(fn?, ctx?, ...args: any[]): Deferred<T>|IPromise<T> {
+export function deferred<T>(fn?, ctx?, ...args: any[]): Deferred<T> {
 	let ret: any = {};
 	ret.promise = new Promise(function(resolve, reject) {
 		ret.resolve = resolve;
@@ -126,10 +126,8 @@ export function deferred<T>(fn?, ctx?, ...args: any[]): Deferred<T>|IPromise<T> 
 		ret.done = function(err, result) { if (err) return reject(err); else resolve(result); };
 	});
 
-	if (typeof fn === 'function') {
-		callFunc(fn,ctx,args.concat([ret.done]))
-		return ret.promise;
-	}
+	
+    
 	return ret;
 
 };

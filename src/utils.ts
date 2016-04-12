@@ -27,8 +27,6 @@ export function ajax (): XMLHttpRequest {
     return e;
 };
 
-
-
 /** Generate an unique id with an optional prefix
  * @param {string} prefix
  * @return {string}
@@ -99,7 +97,6 @@ export function triggerMethodOn(obj: any, eventName: string, args?: any[]) {
 
 
   if (obj[ev] && typeof obj[ev] === 'function') {
-
     callFunc(obj[ev], obj, args)
   }
 

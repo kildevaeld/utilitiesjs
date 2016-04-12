@@ -1,6 +1,9 @@
 
 import {equal, callFunc} from './utils'
-import {any} from './arrays'
+//import {any} from './arrays'
+
+const __has = Object.prototype.hasOwnProperty;
+
 
 /**
  * Takes a nested object and returns a shallow object keyed with the path names
@@ -78,8 +81,9 @@ export function assign(target: any, ...args: any[]) {
   return to;
 }
 
+
 export function has(obj, prop): boolean {
-  return Object.prototype.hasOwnProperty.call(obj, prop)
+  return __has.call(obj, prop)
 }
 
 export function pick(obj: Object, props: string[]): any {
@@ -117,7 +121,7 @@ function intersectionObjects(a, b, predicate) {
   var results = [], aElement, existsInB;
   for (let i = 0, ii = a.length; i < ii; i++) {
     aElement = a[i];
-    existsInB = any(b, function(bElement) { return predicate(bElement, aElement); });
+    existsInB = <any>(b, function(bElement) { return predicate(bElement, aElement); });
 
     if (existsInB) {
       results.push(aElement);

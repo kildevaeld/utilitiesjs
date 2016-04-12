@@ -1,6 +1,13 @@
 
 import {equal} from './utils';
 
+const __slice = Array.prototype.slice;
+
+
+export function isArray(array: any): array is Array<any> {
+    return Array.isArray(array);
+}
+
 // Return a new array with duplicates removed
 export function unique(array: any[]): any[] {
   return array.filter(function(e, i) {
@@ -34,8 +41,14 @@ export function find<T>(array: T[], callback: (item: T, index?: number) => boole
   return null;
 }
 
+export function filter<T>(array: T[], callback: (item: T, index?: number) => boolean, ctx?: any): T[] {
+    return array.filter((e, i) => {
+        return callback.call(ctx, e, i);
+    });
+}
+
 export function slice(array: any, begin?:number, end?:number): any {
-  return Array.prototype.slice.call(array, begin, end);
+  return __slice.call(array, begin, end);
 }
 
 export function flatten(arr) {

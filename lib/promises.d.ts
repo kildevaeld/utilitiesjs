@@ -24,7 +24,7 @@ export interface Deferred<T> {
     reject: (error: Error) => void;
     done: (error: Error, result: T) => void;
 }
-export declare function deferred<T>(fn?: any, ctx?: any, ...args: any[]): Deferred<T> | IPromise<T>;
+export declare function deferred<T>(fn?: any, ctx?: any, ...args: any[]): Deferred<T>;
 export declare function callback<T>(promise: IPromise<T>, callback: (error: Error, result: T) => void, ctx?: any): void;
 export declare function delay<T>(timeout?: number): IPromise<T>;
 export declare function eachAsync<T>(array: T[], iterator: (value: T) => IPromise<void>, context?: any, accumulate?: boolean): IPromise<void>;

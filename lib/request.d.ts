@@ -1,30 +1,53 @@
 import { IPromise } from './promises';
-export declare function queryStringToParams(qs: string): Object;
-export interface Deferrable<U> {
-    promise: IPromise<U>;
-    done: (error: Error, result: U) => void;
-    reject: (error: Error) => void;
-    resolve: (result: U) => void;
+export declare enum HttpMethod {
+    GET = 0,
+    PUT = 1,
+    POST = 2,
+    DELETE = 3,
+    HEAD = 4,
 }
+export declare class HttpError extends Error {
+    status: number;
+    message: string;
+    body: any;
+    url: string;
+    constructor(status: number, message: string, body?: any);
+}
+export declare class ResponseError extends Error {
+    constructor(message: string);
+}
+export declare function queryStringToParams(qs: string): Object;
 export declare function queryParam(obj: any): string;
+export interface Response<T> {
+    status: number;
+    statusText: string;
+    body: any;
+    headers: {
+        [key: string]: string;
+    };
+    isValid: boolean;
+    contentLength: number;
+    contentType: string;
+}
 export declare class Request {
     private _method;
     private _url;
     private _xhr;
-    private _data;
-    private _headers;
     private _params;
-    constructor(_method: string, _url: string);
-    send(data: any): Request;
-    withCredentials(ret: any): Request;
-    end(data?: any): IPromise<string>;
-    json(data?: any): IPromise<Object>;
-    progress(fn: (e: ProgressEvent) => void): this;
+    private _headers;
+    private _data;
+    constructor(_method: HttpMethod, _url: string);
     uploadProgress(fn: (e: ProgressEvent) => void): this;
+    downloadProgress(fn: (e: ProgressEvent) => void): this;
     header(field: string | {
         [key: string]: string;
-    }, value?: string): Request;
-    params(value: any): this;
+    }, value?: string): this;
+    params(key: string | {
+        [key: string]: any;
+    }, value?: any): this;
+    withCredentials(ret: any): Request;
+    json<T>(data?: any): IPromise<Response<T>>;
+    end<T>(data?: any): IPromise<Response<T>>;
     private _apply_params(url);
 }
 export interface IRequest {

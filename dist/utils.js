@@ -65,7 +65,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	__export(__webpack_require__(4));
 	__export(__webpack_require__(6));
 	__export(__webpack_require__(10));
-	__export(__webpack_require__(11));
 
 /***/ },
 /* 1 */
@@ -73,6 +72,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	var utils_1 = __webpack_require__(2);
+	var __slice = Array.prototype.slice;
+	function isArray(array) {
+	    return Array.isArray(array);
+	}
+	exports.isArray = isArray;
 	function unique(array) {
 	    return array.filter(function (e, i) {
 	        for (i += 1; i < array.length; i += 1) {
@@ -104,8 +108,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return null;
 	}
 	exports.find = find;
+	function filter(array, callback, ctx) {
+	    return array.filter(function (e, i) {
+	        return callback.call(ctx, e, i);
+	    });
+	}
+	exports.filter = filter;
 	function slice(array, begin, end) {
-	    return Array.prototype.slice.call(array, begin, end);
+	    return __slice.call(array, begin, end);
 	}
 	exports.slice = slice;
 	function flatten(arr) {
@@ -364,7 +374,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	var utils_1 = __webpack_require__(2);
-	var arrays_1 = __webpack_require__(1);
+	var __has = Object.prototype.hasOwnProperty;
 	function objToPaths(obj, separator) {
 	    if (separator === void 0) {
 	        separator = ".";
@@ -438,7 +448,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.assign = assign;
 	function has(obj, prop) {
-	    return Object.prototype.hasOwnProperty.call(obj, prop);
+	    return __has.call(obj, prop);
 	}
 	exports.has = has;
 	function pick(obj, props) {
@@ -479,7 +489,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        existsInB;
 	    for (var i = 0, ii = a.length; i < ii; i++) {
 	        aElement = a[i];
-	        existsInB = arrays_1.any(b, function (bElement) {
+	        existsInB = (b, function (bElement) {
 	            return predicate(bElement, aElement);
 	        });
 	        if (existsInB) {
@@ -628,10 +638,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (err) return reject(err);else resolve(result);
 	        };
 	    });
-	    if (typeof fn === 'function') {
-	        utils_1.callFunc(fn, ctx, args.concat([ret.done]));
-	        return ret.promise;
-	    }
 	    return ret;
 	}
 	exports.deferred = deferred;
@@ -1231,13 +1237,44 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var utils_1 = __webpack_require__(2);
+	var __extends = undefined && undefined.__extends || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() {
+	        this.constructor = d;
+	    }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
 	var strings_1 = __webpack_require__(4);
 	var objects_1 = __webpack_require__(3);
 	var promises_1 = __webpack_require__(5);
-	var xmlRe = /^(?:application|text)\/xml/,
-	    jsonRe = /^application\/json/,
-	    fileProto = /^file:/;
+	var utils_1 = __webpack_require__(2);
+	(function (HttpMethod) {
+	    HttpMethod[HttpMethod["GET"] = 0] = "GET";
+	    HttpMethod[HttpMethod["PUT"] = 1] = "PUT";
+	    HttpMethod[HttpMethod["POST"] = 2] = "POST";
+	    HttpMethod[HttpMethod["DELETE"] = 3] = "DELETE";
+	    HttpMethod[HttpMethod["HEAD"] = 4] = "HEAD";
+	})(exports.HttpMethod || (exports.HttpMethod = {}));
+	var HttpMethod = exports.HttpMethod;
+	var HttpError = (function (_super) {
+	    __extends(HttpError, _super);
+	    function HttpError(status, message, body) {
+	        _super.call(this, message);
+	        this.status = status;
+	        this.message = message;
+	        this.body = body;
+	    }
+	    return HttpError;
+	})(Error);
+	exports.HttpError = HttpError;
+	var ResponseError = (function (_super) {
+	    __extends(ResponseError, _super);
+	    function ResponseError(message) {
+	        _super.call(this, message);
+	    }
+	    return ResponseError;
+	})(Error);
+	exports.ResponseError = ResponseError;
 	function queryStringToParams(qs) {
 	    var kvp,
 	        k,
@@ -1262,6 +1299,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, []).join('&');
 	}
 	exports.queryParam = queryParam;
+	var jsonRe = /^application\/json/,
+	    fileProto = /^file:/;
 	var isValid = function isValid(xhr, url) {
 	    return xhr.status >= 200 && xhr.status < 300 || xhr.status === 304 || xhr.status === 0 && fileProto.test(url) || xhr.status === 0 && window.location.protocol === 'file:';
 	};
@@ -1269,66 +1308,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function Request(_method, _url) {
 	        this._method = _method;
 	        this._url = _url;
-	        this._headers = { 'X-Requested-With': 'XMLHttpRequest' };
 	        this._params = {};
+	        this._headers = { 'X-Requested-With': 'XMLHttpRequest' };
 	        this._xhr = utils_1.ajax();
 	    }
-	    Request.prototype.send = function (data) {
-	        this._data = data;
-	        return this;
-	    };
-	    Request.prototype.withCredentials = function (ret) {
-	        this._xhr.withCredentials = ret;
-	        return this;
-	    };
-	    Request.prototype.end = function (data) {
-	        var _this = this;
-	        this._data = data || this._data;
-	        var defer = promises_1.deferred();
-	        this._xhr.addEventListener('readystatechange', function () {
-	            if (_this._xhr.readyState !== XMLHttpRequest.DONE) return;
-	            if (!isValid(_this._xhr, _this._url)) {
-	                return defer.reject(new Error('server responded with: ' + _this._xhr.status));
-	            }
-	            defer.resolve(_this._xhr.responseText);
-	        });
-	        data = this._data;
-	        var url = this._url;
-	        if (data && data === Object(data) && this._method == 'GET') {
-	            var sep = url.indexOf('?') === -1 ? '?' : '&';
-	            var d = sep + queryParam(data);
-	            url += d;
-	        }
-	        url = this._apply_params(url);
-	        this._xhr.open(this._method, url, true);
-	        for (var key in this._headers) {
-	            this._xhr.setRequestHeader(key, this._headers[key]);
-	        }
-	        this._xhr.send(data);
-	        return defer.promise;
-	    };
-	    Request.prototype.json = function (data) {
-	        var _this = this;
-	        this.header('content-type', 'application/json; charset=utf-8');
-	        if (!strings_1.isString(data)) {
-	            data = JSON.stringify(data);
-	        }
-	        return this.end(data).then(function (str) {
-	            var accepts = _this._xhr.getResponseHeader('content-type');
-	            if (jsonRe.test(accepts) && str !== '') {
-	                var json = JSON.parse(str);
-	                return json;
-	            } else {
-	                throw new Error('json');
-	            }
-	        });
-	    };
-	    Request.prototype.progress = function (fn) {
-	        this._xhr.addEventListener('progress', fn);
-	        return this;
-	    };
 	    Request.prototype.uploadProgress = function (fn) {
 	        this._xhr.upload.addEventListener('progress', fn);
+	        return this;
+	    };
+	    Request.prototype.downloadProgress = function (fn) {
+	        this._xhr.addEventListener('progress', fn);
 	        return this;
 	    };
 	    Request.prototype.header = function (field, value) {
@@ -1339,9 +1328,80 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        return this;
 	    };
-	    Request.prototype.params = function (value) {
-	        objects_1.extend(this._params, value);
+	    Request.prototype.params = function (key, value) {
+	        if (arguments.length === 1 && objects_1.isObject(key)) {
+	            objects_1.extend(this._params, key);
+	        } else if (arguments.length === 2) {
+	            this._params[key] = value;
+	        }
 	        return this;
+	    };
+	    Request.prototype.withCredentials = function (ret) {
+	        this._xhr.withCredentials = ret;
+	        return this;
+	    };
+	    Request.prototype.json = function (data) {
+	        var _this = this;
+	        this.header('content-type', 'application/json; charset=utf-8');
+	        if (!strings_1.isString(data)) {
+	            data = JSON.stringify(data);
+	        }
+	        return this.end(data).then(function (resp) {
+	            var accepts = _this._xhr.getResponseHeader('content-type');
+	            if (jsonRe.test(accepts) && resp.body != "") {
+	                var json = JSON.parse(resp.body);
+	                var jResp = resp;
+	                jResp.body = json;
+	                return jResp;
+	            } else {
+	                throw new ResponseError("type error");
+	            }
+	        });
+	    };
+	    Request.prototype.end = function (data) {
+	        var _this = this;
+	        data = data || this._data;
+	        var defer = promises_1.deferred();
+	        this._xhr.addEventListener('readystatechange', function () {
+	            if (_this._xhr.readyState !== XMLHttpRequest.DONE) return;
+	            var resp = {
+	                status: _this._xhr.status,
+	                statusText: _this._xhr.statusText,
+	                body: null,
+	                headers: {},
+	                isValid: false,
+	                contentLength: 0,
+	                contentType: null
+	            };
+	            var headers = _this._xhr.getAllResponseHeaders().split('\r\n');
+	            if (headers.length) {
+	                for (var i = 0, ii = headers.length; i < ii; i++) {
+	                    if (headers[i] === '') continue;
+	                    var split = headers[i].split(':');
+	                    resp.headers[split[0].trim()] = split[1].trim();
+	                }
+	            }
+	            resp.contentType = resp.headers['Content-Type'];
+	            resp.contentLength = parseInt(resp.headers['Content-Length']);
+	            if (isNaN(resp.contentLength)) resp.contentLength = 0;
+	            resp.body = _this._xhr.response;
+	            resp.isValid = isValid(_this._xhr, _this._url);
+	            defer.resolve(resp);
+	        });
+	        var method = HttpMethod[this._method];
+	        var url = this._url;
+	        if (data && data === Object(data) && this._method == HttpMethod.GET) {
+	            var sep = url.indexOf('?') === -1 ? '?' : '&';
+	            var d = sep + queryParam(data);
+	            url += d;
+	        }
+	        url = this._apply_params(url);
+	        this._xhr.open(method, url, true);
+	        for (var key in this._headers) {
+	            this._xhr.setRequestHeader(key, this._headers[key]);
+	        }
+	        this._xhr.send(data);
+	        return defer.promise;
 	    };
 	    Request.prototype._apply_params = function (url) {
 	        var params = {};
@@ -1363,95 +1423,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.request = {};
 	['get', 'post', 'put', 'delete', 'patch', 'head'].forEach(function (m) {
 	    exports.request[m === 'delete' ? 'del' : m] = function (url) {
-	        return new Request(m.toUpperCase(), url);
+	        var mm = HttpMethod[m.toUpperCase()];
+	        return new Request(mm, url);
 	    };
 	});
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var utils_1 = __webpack_require__(2);
-	var Debug = (function () {
-	    function Debug(namespace) {
-	        this.enabled = false;
-	        this.namespace = namespace;
-	    }
-	    Debug.enable = function (enabled, namespace) {
-	        for (var k in this.loggers) {
-	            if (namespace && k === namespace) {
-	                this.loggers[k].enabled = enabled;
-	            } else if (!namespace) {
-	                this.loggers[k].enabled = enabled;
-	            }
-	        }
-	    };
-	    Debug.create = function (namespace) {
-	        var logger;
-	        if (this.loggers[namespace]) {
-	            logger = this.loggers[namespace].debug;
-	        } else {
-	            logger = new Debug(namespace);
-	            this.loggers[namespace] = logger;
-	        }
-	        return utils_1.bind(logger.debug, logger);
-	    };
-	    Debug.prototype.debug = function () {
-	        var args = [];
-	        for (var _i = 0; _i < arguments.length; _i++) {
-	            args[_i - 0] = arguments[_i];
-	        }
-	        if (!this.enabled) return;
-	        args[0] = this._coerce(args[0]);
-	        if ('string' !== typeof args[0]) {
-	            args = ['%o'].concat(args);
-	        }
-	        var index = 0;
-	        args[0] = args[0].replace(/%([a-z%])/g, function (match, format) {
-	            if (match === '%%') return match;
-	            index++;
-	            var formatter = Debug.formatters[format];
-	            if ('function' === typeof formatter) {
-	                var val = args[index];
-	                match = formatter.call(self, val);
-	                args.splice(index, 1);
-	                index--;
-	            }
-	            return match;
-	        });
-	        args = this._formatArgs(args);
-	        this._log.apply(this, args);
-	    };
-	    Debug.prototype._log = function () {
-	        var args = [];
-	        for (var _i = 0; _i < arguments.length; _i++) {
-	            args[_i - 0] = arguments[_i];
-	        }
-	        return 'object' === typeof console && console.log && Function.prototype.apply.call(console.log, console, arguments);
-	    };
-	    Debug.prototype._coerce = function (val) {
-	        if (val instanceof Error) return val.stack || val.message;
-	        return val;
-	    };
-	    Debug.prototype._formatArgs = function (args) {
-	        var p = this.prefix ? this.prefix + ":" : '';
-	        args[0] = "[" + p + ":" + this.namespace + "] " + args[0];
-	        return args;
-	    };
-	    Debug.loggers = {};
-	    Debug.formatters = {
-	        j: function j(args) {
-	            return JSON.stringify(args);
-	        }
-	    };
-	    return Debug;
-	})();
-	exports.Debug = Debug;
-	function debug(namespace) {
-	    return Debug.create(namespace);
-	}
-	exports.debug = debug;
 
 /***/ }
 /******/ ])
