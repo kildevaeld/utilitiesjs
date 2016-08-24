@@ -34,9 +34,9 @@ gulp.task('build:bundle', ['build'], function () {
 			]
 		},
 		output: {
-			filename: 'utils.js',
+			filename: 'utilities.js',
 			libraryTarget: 'umd',
-			library: 'utils'
+			library: 'utilities'
 		}
 	}))
 	.pipe(gulp.dest('dist'))
